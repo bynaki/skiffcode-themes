@@ -1,12 +1,15 @@
 // The themes are written by `scripts/generate.ts` from their data files, and committed. These hold
 // what is committed to being what the script writes, and the script to the rules it writes by.
 /// <reference types="node" />
+import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { readFileSync, readdirSync } from 'node:fs'
-import { describe, expect, test } from 'vitest'
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { afterEach, beforeEach, describe, expect, test } from 'vitest'
 import {
   type Bundle,
   type ThemeData,
+  DATA_DIR,
   FALLBACK,
   FORMAT,
   MIN_CONTRAST,
@@ -17,11 +20,13 @@ import {
   contrast,
   contrasts,
   index,
+  nameOf,
   notice,
   over,
   readBundles,
   resolve,
   toml,
+  writeOne,
 } from '../scripts/generate'
 import { type Dump, GROUPS, SOURCES as NEOVIM_SOURCES, fromNeovim } from '../scripts/neovim'
 import { fromVscode, parseJsonc, tokenColor } from '../scripts/vscode'
@@ -259,6 +264,125 @@ describe('the script', () => {
     expect(text).toContain('[ui]\nbackground = "#101010" # none in the source: editor.background\n')
     expect(text).toContain('[diff]\nadded = "#00ff00" # diff.added\n')
     expect(colorsOf(text)['syntax.keyword']).toBe('#a0a0ff')
+  })
+})
+
+describe('one theme outside the list', () => {
+  let dir = ''
+  beforeEach(() => {
+    dir = mkdtempSync(`${tmpdir()}/theme-one-`)
+  })
+  afterEach(() => rmSync(dir, { recursive: true, force: true }))
+
+  /** A bundle of [theme] alone, as /theme-convert writes it to its scratchpad. */
+  const one = (theme: ThemeData, extra: Partial<Bundle> = {}): Bundle => ({
+    family: 'Bare',
+    repository: 'https://example.com/bare',
+    commit: 'a'.repeat(40),
+    license: 'MIT',
+    copyright: 'Copyright (c) Nobody',
+    licenseText: 'MIT License\n\nCopyright (c) Nobody\n\nPermission is hereby granted.\n',
+    themes: [theme],
+    ...extra,
+  })
+  const data = (bundle: unknown) => {
+    const path = `${dir}/data.json`
+    writeFileSync(path, JSON.stringify(bundle))
+    return path
+  }
+
+  test('writes the same file the list does from the same data, but for where the license is', () => {
+    const [name, bundle] = bundles[0]
+    const theme = bundle.themes[0]
+    writeOne(data({ ...bundle, themes: [theme] }), `${dir}/Mine.toml`)
+    const listed = toml(bundle, theme, name).split('\n')
+    const own = readFileSync(`${dir}/Mine.toml`, 'utf8').split('\n')
+    expect(own.slice(0, 3)).toEqual(listed.slice(0, 3))
+    expect(own[3]).toBe(`# License: ${bundle.license}, ${bundle.copyright}. The full text is at the end of this file,`)
+    expect(own[4]).toContain(REPOSITORY)
+    // Everything from the last header line to the last color.
+    expect(own.slice(5, listed.length - 1)).toEqual(listed.slice(5, -1))
+    expect(colorsOf(own.join('\n'))).toEqual(colorsOf(listed.join('\n')))
+    // The license follows, in full, as comments.
+    const end = own.slice(listed.length - 1).join('\n')
+    for (const line of bundle.licenseText.trimEnd().split('\n')) expect(end).toContain(`# ${line}`.trimEnd())
+    expect(own.slice(listed.length - 1).every((line) => line === '' || line.startsWith('#'))).toBe(true)
+  })
+
+  test('touches nothing of the list', () => {
+    const snapshot = () =>
+      [THEMES_DIR, DATA_DIR].flatMap((at) => readdirSync(at).sort().map((file) => `${at}${file} ${readFileSync(at + file, 'utf8')}`))
+        .concat(['index.json', 'NOTICE.md'].map(atRoot))
+    const before = snapshot()
+    writeOne(data(one(bare())), `${dir}/Bare.toml`)
+    expect(snapshot()).toEqual(before)
+    expect(readdirSync(dir).sort()).toEqual(['Bare.toml', 'data.json'])
+  })
+
+  test('says when the source has no license text', () => {
+    writeOne(data(one(bare(), { license: 'none', licenseText: '' })), `${dir}/Bare.toml`)
+    expect(readFileSync(`${dir}/Bare.toml`, 'utf8')).toMatch(/\n# The source has no license text\.\n$/)
+  })
+
+  test('writes nothing for data that is wrong', () => {
+    const missing = bare()
+    delete missing.colors['syntax.keyword']
+    const cases: [unknown, string][] = [
+      [one(missing), 'the source gives no syntax.keyword'],
+      [one(bare({ 'syntax.string': 'green' })), '"green" is not a color'],
+      [one(bare({ 'syntax.strings': '#000' })), 'syntax.strings is not a theme key'],
+      [{ ...one(bare()), themes: [bare(), bare()] }, 'exactly one theme'],
+      [one(bare(), { commit: 'abc123' }), 'not a full SHA'],
+      [{ ...one(bare()), repository: undefined }, 'no repository'],
+      [one({ ...bare(), base: 'dim' as 'dark' }), 'neither light nor dark'],
+      [one({ ...bare(), base: 'light' }), 'editor.background #101010 is dark'],
+      [one(bare({ 'editor.foreground': '#202020' })), 'below 4.5:1'],
+    ]
+    for (const [bundle, error] of cases) {
+      expect(() => writeOne(data(bundle), `${dir}/Bare.toml`), error).toThrow(error)
+      expect(existsSync(`${dir}/Bare.toml`), error).toBe(false)
+    }
+  })
+
+  test('lets a low contrast be when the data says why', () => {
+    const theme = { ...bare({ 'editor.foreground': '#202020' }), lowContrast: 'the source draws it so' }
+    const { table, notes } = writeOne(data(one(theme)), `${dir}/Bare.toml`)
+    expect(notes).toEqual(['editor.foreground is below 4.5:1, let be: the source draws it so'])
+    expect(table.split('\n')[1]).toMatch(/^Bare\t1\.\d\t/)
+  })
+
+  test('refuses a name Import Theme refuses, a file already there, and a place in the list', () => {
+    const path = data(one(bare()))
+    for (const name of ['light.toml', 'System.toml', 'Dark.TOML', 'bare.json', 'bare.toml.txt', ' bare.toml', 'bare .toml', 'bare!.toml', `${'a'.repeat(65)}.toml`]) {
+      expect(() => writeOne(path, `${dir}/${name}`), name).toThrow()
+    }
+    expect(readdirSync(dir)).toEqual(['data.json'])
+    writeFileSync(`${dir}/Bare.toml`, 'mine')
+    expect(() => writeOne(path, `${dir}/Bare.toml`)).toThrow('already there')
+    expect(readFileSync(`${dir}/Bare.toml`, 'utf8')).toBe('mine')
+    expect(() => writeOne(path, `${THEMES_DIR}bare-new.toml`)).toThrow('part of the list')
+    expect(existsSync(`${THEMES_DIR}bare-new.toml`)).toBe(false)
+  })
+
+  test("takes the names Skiff Code's nameOf takes", () => {
+    for (const name of ['Nord', 'nightfox (dusk)', '나의 테마', 'a_b-c', 'a'.repeat(64)]) {
+      expect(nameOf(`/x/${name}.toml`), name).toEqual({ name })
+    }
+    expect(nameOf('/x/Light.toml')).toEqual({ refused: expect.stringContaining("Skiff Code's own themes") })
+  })
+
+  test('says when the name is also one in the list', () => {
+    const { notes } = writeOne(data(one(bare())), `${dir}/${bundles[0][1].themes[0].id}.toml`)
+    expect(notes.join('\n')).toContain('in the list: downloading that one would ask to replace this')
+  })
+
+  test('is what npm run themes -- --one writes', () => {
+    const path = data(one(bare()))
+    const output = execFileSync('node', ['scripts/generate.ts', '--one', path, '--out', `${dir}/sub/Bare.toml`], { cwd: ROOT, encoding: 'utf8' })
+    expect(output).toContain(`wrote ${dir}/sub/Bare.toml`)
+    expect(output).toMatch(/^theme\t/)
+    expect(readFileSync(`${dir}/sub/Bare.toml`, 'utf8')).toContain('[diff]\nadded = "#00ff00" # diff.added\n')
+    expect(() => execFileSync('node', ['scripts/generate.ts', '--one', path], { cwd: ROOT, stdio: 'pipe' })).toThrow()
   })
 })
 

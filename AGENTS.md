@@ -11,6 +11,7 @@ what is pushed to `main` is what every user sees.
 ```bash
 npm ci
 npm run themes    # writes themes/, index.json and NOTICE.md from scripts/data/
+npm run themes -- --one <data file> --out <name>.toml   # one theme outside the list, nothing else
 npm test          # tsc, then vitest
 node scripts/vscode.ts <theme.json>                                         # a VS Code theme → colors
 node scripts/neovim.ts <plugin dir> <colorscheme> [light|dark] [<ex command>...]  # needs nvim
