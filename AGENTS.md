@@ -38,3 +38,12 @@ Node 24 or later: it runs the `.ts` files directly.
 - Ids are lowercase letters, digits and `-`, and never `system`, `light` or `dark` (the app's own).
 - The design, the mapping table and the decisions behind them are in Skiff Code's
   `docs/skiffcode.spec/community-themes.md` (Korean).
+
+## One theme for one person: `/theme-convert`
+
+`/theme-convert <repository URL> [variant]` (`.claude/skills/theme-convert/`, run as a command only)
+converts a theme that is not in the list by the same method and writes it to
+`user-themes/<name>.toml`, for one person to bring into Skiff Code with `Import Theme`. It does not
+add anything to the list: its data stays in the session's scratchpad, and **`user-themes/` is in
+`.gitignore` and is never committed** — this repository is public, and what is there is someone's
+own. The app's `SKIFF_THEMES_DIR` test reads `user-themes/` too, when it is there.
