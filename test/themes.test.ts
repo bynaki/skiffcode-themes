@@ -229,6 +229,26 @@ describe('the script', () => {
     expect(colors['diff.removed'].value).toBe('#ff0000')
   })
 
+  test("takes the sidebar's git colors from the diff colors, drawn over the sidebar when they are not opaque", () => {
+    const filled = resolve(bare({ 'ui.background': '#ffffff', 'diff.changed': '#0000ff80' }))
+    expect(filled['ui.git_untracked']).toEqual({ value: filled['diff.added'].value, from: 'none in the source: diff.added' })
+    // diff.changed itself is drawn over editor.background; the git color stands on ui.background.
+    expect(filled['ui.git_modified']).toEqual({
+      value: over('#0000ff80', '#ffffff'),
+      from: 'none in the source: diff.changed, over ui.background',
+    })
+    const own = resolve(bare({ 'ui.background': '#000000', 'ui.git_modified': '#ffffff80' }))
+    expect(own['ui.git_modified']).toEqual({ value: '#808080', from: 'ui.git_modified, over ui.background' })
+  })
+
+  test("measures the sidebar's git colors against ui.background, and the rest against editor.background", () => {
+    const measured = contrasts(Object.fromEntries(Object.entries(resolve(bare({
+      'ui.background': '#ffffff', 'ui.git_modified': '#000000', 'editor.foreground': '#ffffff',
+    }))).map(([key, picked]) => [key, picked.value])))
+    expect(measured['ui.git_modified']).toBeCloseTo(21, 5)
+    expect(measured['editor.foreground']).toBeCloseTo(contrast('#ffffff', '#101010'), 5)
+  })
+
   test('refuses a theme missing a key nothing stands in for, a color that is not one, or a key no file has', () => {
     const missing = bare()
     delete missing.colors['syntax.keyword']
@@ -424,6 +444,9 @@ describe('reading a VS Code theme', () => {
     expect(dark['diff.removed']).toEqual({ value: '#aa0000', from: "editorGutter.deletedBackground: VS Code's default, editorError.foreground" })
     const light = fromVscode({ type: 'light', colors: {} }).colors
     expect(light['diff.removed'].value).toBe('#e51400')
+    // From the built-in git extension rather than core, read at the same commit.
+    expect(dark['ui.git_modified'].value).toBe('#e2c08d')
+    expect(light['ui.git_untracked']).toEqual({ value: '#007100', from: "gitDecoration.untrackedResourceForeground: VS Code's default for a light theme" })
     expect(light['editor.cursor'].value).toBe('#000000')
   })
 

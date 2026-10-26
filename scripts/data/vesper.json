@@ -19,6 +19,8 @@
         "ui.accent": { "value": "#ffc799", "from": "focusBorder" },
         "ui.strong_background": { "value": "#ffc799", "from": "button.background" },
         "ui.strong_foreground": { "value": "#000", "from": "button.foreground" },
+        "ui.git_modified": { "value": "#e2c08d", "from": "gitDecoration.modifiedResourceForeground: VS Code's default for a dark theme" },
+        "ui.git_untracked": { "value": "#73c991", "from": "gitDecoration.untrackedResourceForeground: VS Code's default for a dark theme" },
         "editor.background": { "value": "#101010", "from": "editor.background" },
         "editor.foreground": { "value": "#fff", "from": "editor.foreground" },
         "editor.gutter_foreground": { "value": "#505050", "from": "editorLineNumber.foreground" },

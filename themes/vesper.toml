@@ -18,6 +18,8 @@ accent = "#ffc799" # focusBorder
 scrim = "#10101099" # none in the source: editor.background at alpha 99
 strong_background = "#ffc799" # button.background
 strong_foreground = "#000" # button.foreground
+git_modified = "#e2c08d" # gitDecoration.modifiedResourceForeground: VS Code's default for a dark theme
+git_untracked = "#73c991" # gitDecoration.untrackedResourceForeground: VS Code's default for a dark theme
 
 # The document: the code views and rendered markdown.
 [editor]

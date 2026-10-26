@@ -66,6 +66,8 @@ export const FALLBACK: Record<string, string | null> = {
   'ui.scrim': 'editor.background',
   'ui.strong_background': 'ui.foreground',
   'ui.strong_foreground': 'ui.background',
+  'ui.git_modified': 'diff.changed',
+  'ui.git_untracked': 'diff.added',
   'editor.background': null,
   'editor.foreground': null,
   'editor.gutter_background': 'editor.background',
@@ -174,7 +176,22 @@ export function resolve(theme: ThemeData): Record<string, Picked> {
     if (expand(value).endsWith('ff')) continue
     colors[key] = { value: over(value, background), from: `${from}, over editor.background` }
   }
+  // Text on the sidebar, which is measured against it: drawn over it once here, as the diff colors are.
+  const sidebar = opaqueOver(colors['ui.background'].value, background)
+  for (const key of GIT_KEYS) {
+    const { value, from } = colors[key]
+    if (expand(value).endsWith('ff')) continue
+    colors[key] = { value: over(value, sidebar), from: `${from}, over ui.background` }
+  }
   return colors
+}
+
+/** The keys drawn as text on `ui.background`: the sidebar tree's changed files (Skiff Code's M15). */
+const GIT_KEYS = ['ui.git_modified', 'ui.git_untracked']
+
+/** [color] as it shows over [under], opaque either way. */
+function opaqueOver(color: string, under: string): string {
+  return expand(color).endsWith('ff') ? color : over(color, under)
 }
 
 /** Where the themes are published, which a file names since it travels without the rest. */
@@ -241,7 +258,7 @@ function body(theme: ThemeData): string[] {
  * The version of the theme format: the keys a file has and what they take. Skiff Code refuses a list
  * whose format is higher than the one it knows, so this goes up when `reference/light.toml` changes.
  */
-export const FORMAT = 1
+export const FORMAT = 2
 
 /** The colors the app's theme list draws before a theme is downloaded: its `Themes.SWATCH`. */
 export const SWATCH = ['editor.background', 'editor.foreground', 'syntax.keyword', 'syntax.string', 'syntax.definition', 'ui.accent']
@@ -299,17 +316,23 @@ export function notice(bundles: Bundle[]): string {
   return `${parts.join('\n')}\n`
 }
 
-/** The keys whose contrast against `editor.background` the table shows. */
-const MEASURED = ['editor.foreground', 'syntax.comment', 'syntax.keyword', 'syntax.string', 'syntax.definition', 'syntax.type', 'syntax.literal']
+/**
+ * The keys whose contrast the table shows: the document's against `editor.background`, and the
+ * sidebar's git colors against `ui.background`, which is what they are drawn on.
+ */
+const MEASURED = ['editor.foreground', 'syntax.comment', 'syntax.keyword', 'syntax.string', 'syntax.definition', 'syntax.type', 'syntax.literal', ...GIT_KEYS]
 
 /** Below this, `editor.foreground` fails the run unless the theme says why; the others are only shown. */
 export const MIN_CONTRAST = 4.5
 
-/** Each [MEASURED] key's contrast against [colors]' `editor.background`. */
+/** Each [MEASURED] key's contrast against [colors]' `editor.background`, or `ui.background` for [GIT_KEYS]. */
 export function contrasts(colors: Record<string, string>): Record<string, number> {
-  const background = colors['editor.background']
-  const opaque = expand(background).endsWith('ff') ? background : over(background, '#000')
-  return Object.fromEntries(MEASURED.map((key) => [key, contrast(over(colors[key], opaque), opaque)]))
+  const editor = opaqueOver(colors['editor.background'], '#000')
+  const sidebar = opaqueOver(colors['ui.background'], editor)
+  return Object.fromEntries(MEASURED.map((key) => {
+    const under = GIT_KEYS.includes(key) ? sidebar : editor
+    return [key, contrast(over(colors[key], under), under)]
+  }))
 }
 
 export const ROOT = fileURLToPath(new URL('../', import.meta.url))

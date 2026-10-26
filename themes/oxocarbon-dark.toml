@@ -18,6 +18,8 @@ accent = "#3ddbd9" # Function fg
 scrim = "#16161699" # none in the source: editor.background at alpha 99
 strong_background = "#393939" # PmenuSel bg
 strong_foreground = "#3ddbd9" # PmenuSel fg
+git_modified = "#78a9ff" # none in the source: diff.changed
+git_untracked = "#08bdba" # none in the source: diff.added
 
 # The document: the code views and rendered markdown.
 [editor]

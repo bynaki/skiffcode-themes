@@ -22,7 +22,7 @@ each color has a comment saying what in the source it came from.
 
 ## Themes
 
-45 themes from 15 projects. The id is the file name in `themes/` and the name the app saves the
+53 themes from 17 projects. The id is the file name in `themes/` and the name the app saves the
 theme under.
 
 ### Catppuccin
@@ -202,6 +202,32 @@ A simple, bright and elegant theme in Light, Mirage and Dark.
 | `ayu-light` | Ayu Light |
 | `ayu-mirage` | Ayu Mirage |
 | `ayu-dark` | Ayu Dark |
+
+### Nord
+
+An arctic, north-bluish palette of clean, muted colors.
+[nordtheme/nord](https://github.com/nordtheme/nord), read from its VS Code theme,
+[nordtheme/visual-studio-code](https://github.com/nordtheme/visual-studio-code). MIT.
+
+| id | name |
+|---|---|
+| `nord` | Nord |
+
+### Nightfox
+
+A family of seven styles, from the dark Nightfox and Carbonfox to the light Dayfox and Dawnfox.
+[EdenEast/nightfox.nvim](https://github.com/EdenEast/nightfox.nvim), read from its Neovim
+colorschemes. MIT.
+
+| id | name |
+|---|---|
+| `nightfox` | Nightfox |
+| `dayfox` | Dayfox |
+| `dawnfox` | Dawnfox |
+| `duskfox` | Duskfox |
+| `nordfox` | Nordfox |
+| `terafox` | Terafox |
+| `carbonfox` | Carbonfox |
 
 ## How they are made
 

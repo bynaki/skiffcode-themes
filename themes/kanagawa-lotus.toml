@@ -18,6 +18,8 @@ accent = "#4d699b" # Function fg
 scrim = "#f2ecbc99" # none in the source: editor.background at alpha 99
 strong_background = "#9fb5c9" # PmenuSel bg
 strong_foreground = "#43436c" # Pmenu fg
+git_modified = "#de9800" # NvimTreeGitDirty fg
+git_untracked = "#6e915f" # NvimTreeGitNew fg
 
 # The document: the code views and rendered markdown.
 [editor]

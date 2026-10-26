@@ -29,8 +29,21 @@ Node 24 or later: it runs the `.ts` files directly.
 - **The keys are Skiff Code's.** `reference/light.toml` is a copy of the app's
   `code/src/main/assets/themes/light.toml`, and `generate.ts`'s `FALLBACK` must list the same keys
   in the same order. When the app changes its theme keys, copy the file again, update `FALLBACK`
-  and both readers' `SOURCES`, and raise `FORMAT` in `generate.ts`: the app refuses a list whose
-  `format` is higher than it knows, and an older app would refuse the new keys.
+  and both readers' `SOURCES` (and `vscode.ts`'s `DEFAULTS` for a VS Code color with a default),
+  and raise `FORMAT` in `generate.ts`: the app refuses a list whose `format` is higher than it
+  knows, and an older app draws a file with a key it does not know in its bundled colors.
+  Then:
+  - re-read every source at the commit its data file records, for the new keys only, and check
+    that every color already recorded comes back the same (the reading is the same one);
+  - check what the contrast table measures a new key against (`MEASURED`): a color drawn on the
+    sidebar or the menu stands on `ui.background`, not `editor.background`;
+  - check `/theme-convert` (below): what its report points out, and what it says a person needs to
+    import the file. The files it made in `user-themes/` are made again with it.
+  The app's `AGENTS.md` ("Themes live outside the app too") has the same list from its side.
+- **`FORMAT` 2** (Skiff Code's M15) added `ui.git_modified` and `ui.git_untracked`, the sidebar
+  tree's colors for a changed file: VS Code's `gitDecoration.*ResourceForeground`, Neovim's
+  nvim-tree and neo-tree git groups, else the diff colors. **Push it no earlier than an app
+  release that knows format 2**: before then no installed app can read the list.
 - **Whether the app's parser takes every file is checked from the app's repository**:
   `SKIFF_THEMES_DIR=<this checkout> ./gradlew :code:testDebugUnitTest` there. Run it before pushing.
 - `editor.foreground` must be 4.5:1 against `editor.background`. A theme whose source is below that

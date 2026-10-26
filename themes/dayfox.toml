@@ -1,0 +1,57 @@
+# Dayfox, converted to a Skiff Code theme.
+# Source: https://github.com/EdenEast/nightfox.nvim at 4dacd3f0185a2227bdf3b6c0975a8f0bf87cac9a,
+#   the highlight groups of :colorscheme dayfox, read in Neovim v0.12.4
+# License: MIT, Copyright (c) 2021 James Simpson. The full text is in NOTICE.md of
+#   https://github.com/bynaki/skiffcode-themes, written by scripts/generate.ts there from scripts/data/nightfox.json.
+# The comment after each color names what in the source it came from.
+base = "light"
+
+# The menu, the sidebar, the palette, the open files menu and the banner.
+[ui]
+background = "#e4dcd4" # NormalFloat bg
+foreground = "#3d2b5a" # NormalFloat fg
+muted = "#837a72" # Comment fg
+border = "#824d5b" # FloatBorder fg
+faint = "#aab0ad" # NonText fg
+subtle = "#d3c7bb" # CursorLine bg
+accent = "#223d90" # Function fg
+scrim = "#f6f2ee99" # none in the source: editor.background at alpha 99
+strong_background = "#a4c1c2" # PmenuSel bg
+strong_foreground = "#3d2b5a" # Pmenu fg
+git_modified = "#ac5402" # NvimTreeGitDirty fg
+git_untracked = "#396847" # NvimTreeGitNew fg
+
+# The document: the code views and rendered markdown.
+[editor]
+background = "#f6f2ee" # Normal bg
+foreground = "#3d2b5a" # Normal fg
+gutter_background = "#f6f2ee" # none in the source: editor.background
+gutter_foreground = "#824d5b" # LineNr fg
+gutter_border = "#e4dcd4" # WinSeparator fg
+cursor = "#3d2b5a" # Cursor bg
+selection = "#e7d2be" # Visual bg
+code_background = "#dbd1dd" # ColorColumn bg
+
+# The colors of code, in the code views and in rendered markdown.
+[syntax]
+keyword = "#6e33ce" # @keyword fg (via Keyword)
+atom = "#955f61" # @boolean fg (via Number)
+literal = "#955f61" # @number fg (via Number)
+string = "#396847" # @string fg (via String)
+regexp = "#924702" # @string.regexp fg
+definition = "#223d90" # @function fg (via Function)
+local = "#22676d" # @variable.parameter fg
+type = "#ac5402" # @type fg (via Type)
+class = "#ac5402" # @lsp.type.class fg (via Type)
+macro = "#a5222f" # @function.macro fg
+property = "#2848a9" # @property fg
+comment = "#837a72" # @comment fg (via Comment)
+meta = "#7f5152" # @attribute fg (via Constant)
+invalid = "#a5222f" # DiagnosticError fg
+warning = "#ac5402" # DiagnosticWarn fg
+
+# The diff layer's lines, tinted by diff_alpha, and the git gutter's bars.
+[diff]
+added = "#396847" # GitSignsAdd fg
+removed = "#a5222f" # GitSignsDelete fg
+changed = "#ac5402" # GitSignsChange fg

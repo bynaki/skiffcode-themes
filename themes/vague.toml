@@ -18,6 +18,8 @@ accent = "#c48282" # Function fg
 scrim = "#14141599" # none in the source: editor.background at alpha 99
 strong_background = "#cdcdcd" # PmenuSel bg (reversed)
 strong_foreground = "#252530" # PmenuSel fg (reversed)
+git_modified = "#f3be7c" # none in the source: diff.changed
+git_untracked = "#d8647e" # NeoTreeGitUntracked fg
 
 # The document: the code views and rendered markdown.
 [editor]

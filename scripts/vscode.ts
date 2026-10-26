@@ -47,6 +47,8 @@ export const SOURCES: Record<string, string[]> = {
   'ui.accent': ['ui:focusBorder', 'ui:button.background'],
   'ui.strong_background': ['ui:button.background'],
   'ui.strong_foreground': ['ui:button.foreground'],
+  'ui.git_modified': ['ui:gitDecoration.modifiedResourceForeground'],
+  'ui.git_untracked': ['ui:gitDecoration.untrackedResourceForeground'],
   'editor.background': ['ui:editor.background'],
   'editor.foreground': ['ui:editor.foreground'],
   'editor.gutter_background': ['ui:editorGutter.background'],
@@ -90,6 +92,9 @@ export const DEFAULTS: Record<string, { dark: string; light: string } | string> 
   'editorGutter.addedBackground': { dark: '#487e02', light: '#48985d' },
   'editorGutter.deletedBackground': 'editorError.foreground',
   'editorGutter.modifiedBackground': { dark: '#1b81a8', light: '#2090d3' },
+  // Not core's but the built-in git extension's, from its package.json's `colors` at the same commit.
+  'gitDecoration.modifiedResourceForeground': { dark: '#e2c08d', light: '#895503' },
+  'gitDecoration.untrackedResourceForeground': { dark: '#73c991', light: '#007100' },
 }
 
 /** The keys that take only an opaque color from the theme, passing over one with alpha. */

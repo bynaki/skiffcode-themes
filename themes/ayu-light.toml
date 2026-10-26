@@ -18,6 +18,8 @@ accent = "#f29718" # focusBorder
 scrim = "#fcfcfc99" # none in the source: editor.background at alpha 99
 strong_background = "#f29718" # button.background
 strong_foreground = "#7e4b01" # button.foreground
+git_modified = "#478acc" # gitDecoration.modifiedResourceForeground
+git_untracked = "#6cbf43" # gitDecoration.untrackedResourceForeground
 
 # The document: the code views and rendered markdown.
 [editor]

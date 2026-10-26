@@ -18,6 +18,8 @@ accent = "#6c664b" # focusBorder, Dracula's #6272a4 as Alucard's
 scrim = "#fffbeb99" # none in the source: editor.background at alpha 99
 strong_background = "#cfcfde" # button.background, Dracula's #44475a as Alucard's
 strong_foreground = "#1f1f1f" # button.foreground, Dracula's #f8f8f2 as Alucard's
+git_modified = "#036a96" # gitDecoration.modifiedResourceForeground, Dracula's #8be9fd as Alucard's
+git_untracked = "#14710a" # gitDecoration.untrackedResourceForeground, Dracula's #50fa7b as Alucard's
 
 # The document: the code views and rendered markdown.
 [editor]

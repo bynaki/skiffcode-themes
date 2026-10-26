@@ -18,6 +18,8 @@ accent = "#8da101" # Function fg
 scrim = "#f3ead399" # none in the source: editor.background at alpha 99
 strong_background = "#93b259" # PmenuSel bg
 strong_foreground = "#f3ead3" # PmenuSel fg
+git_modified = "#3a94c5" # NeoTreeGitModified fg (via Blue)
+git_untracked = "#5c6a72" # NeoTreeGitUntracked fg (via Fg)
 
 # The document: the code views and rendered markdown.
 [editor]

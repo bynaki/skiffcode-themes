@@ -55,6 +55,10 @@ export const SOURCES: Record<string, string[]> = {
   'ui.strong_background': ['PmenuSel bg'],
   // A PmenuSel with no fg keeps the menu's.
   'ui.strong_foreground': ['PmenuSel fg', 'Pmenu fg'],
+  // The file explorers' git colors: nvim-tree's, then neo-tree's. A colorscheme that styles neither
+  // leaves these to the generator, which takes the diff colors.
+  'ui.git_modified': ['NvimTreeGitDirty fg', 'NeoTreeGitModified fg'],
+  'ui.git_untracked': ['NvimTreeGitNew fg', 'NeoTreeGitUntracked fg'],
   'editor.background': ['Normal bg'],
   'editor.foreground': ['Normal fg'],
   'editor.gutter_background': ['SignColumn bg'],

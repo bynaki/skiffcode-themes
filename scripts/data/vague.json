@@ -21,6 +21,7 @@
         "ui.accent": { "value": "#c48282", "from": "Function fg" },
         "ui.strong_background": { "value": "#cdcdcd", "from": "PmenuSel bg (reversed)" },
         "ui.strong_foreground": { "value": "#252530", "from": "PmenuSel fg (reversed)" },
+        "ui.git_untracked": { "value": "#d8647e", "from": "NeoTreeGitUntracked fg" },
         "editor.background": { "value": "#141415", "from": "Normal bg" },
         "editor.foreground": { "value": "#cdcdcd", "from": "Normal fg" },
         "editor.gutter_foreground": { "value": "#606079", "from": "LineNr fg" },

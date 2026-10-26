@@ -17,7 +17,9 @@ light or dark side, a contrast level). Without a URL, ask for one and stop.
 
 **The method is the design's, not this file's.** Read the section "바꾸는 방법" of
 `docs/skiffcode.spec/community-themes.md` in a checkout of Skiff Code (`bynaki/skiff`; look beside
-this repository for one that has the file) before reading the source. It holds the mapping table,
+this repository for one that has the file) before reading the source. Take the checkout whose mapping
+table has a row for every key in `reference/light.toml`: `main` lags behind a key change until the
+app is released, and a branch beside it may be ahead. It holds the mapping table,
 how each reader chooses, and the cases met so far (a theme only in a release's `.vsix`, a Vim
 colorscheme's options, a license with no file). Do not copy the table here or work from memory of it.
 
@@ -98,6 +100,10 @@ before (the file is under `user-themes/`, which is ignored), and the file starts
 
 In the user's language: the file's path; the source (repository, commit, file); the license, and a
 warning when it is missing or not permissive; the contrast table, pointing out syntax colors below
-3:1 (reported only, as the design says); what the script noted; and that nothing was committed. To
+3:1 and the sidebar's `git_modified`/`git_untracked` below 4.5:1 against `ui.background` (both
+reported only, as the design says); what the script noted; and that nothing was committed. To
 see it in Skiff Code the file goes to the device and in through `Import Theme`; that is not done
-here.
+here. Say which app it needs: `Import Theme` takes one file with no format check, so an app older
+than the keys in `reference/light.toml` reads the file as having a key it does not know and draws
+the whole theme in its bundled colors. The format the file was made for is `FORMAT` in
+`scripts/generate.ts`.
