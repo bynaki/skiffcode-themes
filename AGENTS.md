@@ -42,8 +42,9 @@ Node 24 or later: it runs the `.ts` files directly.
   The app's `AGENTS.md` ("Themes live outside the app too") has the same list from its side.
 - **`FORMAT` 2** (Skiff Code's M15) added `ui.git_modified` and `ui.git_untracked`, the sidebar
   tree's colors for a changed file: VS Code's `gitDecoration.*ResourceForeground`, Neovim's
-  nvim-tree and neo-tree git groups, else the diff colors. **Push it no earlier than an app
-  release that knows format 2**: before then no installed app can read the list.
+  nvim-tree and neo-tree git groups, else the diff colors. **Push a raised format only once every
+  app that reads the list knows it**, or that app cannot read the list at all. Skiff Code has no
+  release yet, so on 2026-10-26 those were the user's own devices, reinstalled with format 2 first.
 - **Whether the app's parser takes every file is checked from the app's repository**:
   `SKIFF_THEMES_DIR=<this checkout> ./gradlew :code:testDebugUnitTest` there. Run it before pushing.
 - `editor.foreground` must be 4.5:1 against `editor.background`. A theme whose source is below that

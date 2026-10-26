@@ -19,7 +19,7 @@ light or dark side, a contrast level). Without a URL, ask for one and stop.
 `docs/skiffcode.spec/community-themes.md` in a checkout of Skiff Code (`bynaki/skiff`; look beside
 this repository for one that has the file) before reading the source. Take the checkout whose mapping
 table has a row for every key in `reference/light.toml`: `main` lags behind a key change until the
-app is released, and a branch beside it may be ahead. It holds the mapping table,
+work is merged into it, and a branch beside it may be ahead. It holds the mapping table,
 how each reader chooses, and the cases met so far (a theme only in a release's `.vsix`, a Vim
 colorscheme's options, a license with no file). Do not copy the table here or work from memory of it.
 
